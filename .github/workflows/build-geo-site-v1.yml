@@ -139,7 +139,7 @@ jobs:
           tag_name: "V-${{ env.current_date_time }}"
           name: "V-${{ env.current_date_time }}"
           token: ${{ secrets.GITHUB_TOKEN }}
-          prerelease: false
+          prerelease: true
           body: |
             geo ext build result.
           files: |
