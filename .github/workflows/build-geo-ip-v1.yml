@@ -85,7 +85,7 @@ jobs:
 
       - name: cp config
         run: |
-          cp -rf ${{ github.workspace }}ext/geoip/config.json ${{ github.workspace }}/build/geoip/config.json
+          cp -rf ${{ github.workspace }}/ext/geoip/config.json ${{ github.workspace }}/build/geoip/config.json
 
       - name: down data rec
         run: |
