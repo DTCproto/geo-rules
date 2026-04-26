@@ -1,0 +1,40 @@
+{
+  "input": [
+    {
+      "type": "text",
+      "action": "add",
+      "args": {
+        "name": "cn",
+        "uri": "./data/china-operator-ip.txt",
+        "removePrefixesInLine": [
+          "Host,",
+          "IP-CIDR"
+        ],
+        "removeSuffixesInLine": [
+          ",no-resolve"
+        ]
+      }
+    },
+    {
+      "type": "private",
+      "action": "add",
+      "args": {
+        "name": "private"
+      }
+    }
+  ],
+  "output": [
+    {
+      "type": "v2rayGeoIPDat",
+      "action": "output",
+      "args": {
+        "outputDir": "./output",
+        "outputName": "geoip-operator.dat",
+        "wantedList": [
+          "cn",
+          "private"
+        ]
+      }
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-name: BUILD_GEO_SITE(v1)
+name: BUILD_GEO_IP(v1)
 
 on:
   workflow_dispatch:
@@ -74,36 +74,40 @@ jobs:
         run: |
           sudo apt install tree -y
 
-      - name: git clone domain-list-community
+      - name: git clone geoip
         run: |
           mkdir -p ${{ github.workspace }}/build
           cd ${{ github.workspace }}/build
-          git clone -b master https://github.com/v2fly/domain-list-community.git
-          cd ${{ github.workspace }}/build/domain-list-community
+          git clone -b master https://github.com/v2fly/geoip.git
+          cd ${{ github.workspace }}/build/geoip
           git submodule update --init --recursive
           go get -u
 
+      - name: cp config
+        run: |
+          cp -rf ${{ github.workspace }}ext/geoip/config.json ${{ github.workspace }}/build/geoip/config.json
+
       - name: down data rec
         run: |
-          mkdir -p ${{ github.workspace }}/build/domain-list-community/data
-          cd ${{ github.workspace }}/build/domain-list-community/data
-          rm -rf ${{ github.workspace }}/build/domain-list-community/data/*
-          curl -sL https://static-file-global.353355.xyz/rules/cn-additional-list.txt -o cn
-          tree ${{ github.workspace }}/build/domain-list-community/data
+          mkdir -p ${{ github.workspace }}/build/geoip/data
+          cd ${{ github.workspace }}/build/geoip/data
+          rm -rf ${{ github.workspace }}/build/geoip/data/*
+          curl -sL https://raw.githubusercontent.com/gaoyifan/china-operator-ip/refs/heads/ip-lists/china46.txt -o china-operator-ip.txt
+          tree ${{ github.workspace }}/build/geoip/data
 
       - name: build
         run: |
-          cd ${{ github.workspace }}/build/domain-list-community
-          go run ./ --outputdir=output/ --outputname=geosite-additional.dat
-          tree ${{ github.workspace }}/build/domain-list-community/output
+          cd ${{ github.workspace }}/build/geoip
+          go run ./ -c ./config.json
+          tree ${{ github.workspace }}/build/geoip/output
 
       - name: Upload dat
         uses: actions/upload-artifact@v7
         with:
-          name: dat-geo-site
+          name: dat-geo-ip
           compression-level: 9
           path: |
-            ${{ github.workspace }}/build/domain-list-community/output/*.dat
+            ${{ github.workspace }}/build/geoip/output/*.dat
 
   release:
     if: ${{ inputs.release_archives }}
@@ -137,8 +141,8 @@ jobs:
       - name: Release archives
         uses: softprops/action-gh-release@v3
         with:
-          tag_name: "V-${{ env.current_date_time }}.site"
-          name: "V-${{ env.current_date_time }}.site"
+          tag_name: "V-${{ env.current_date_time }}.ip"
+          name: "V-${{ env.current_date_time }}.ip"
           token: ${{ secrets.GITHUB_TOKEN }}
           prerelease: true
           body: |
