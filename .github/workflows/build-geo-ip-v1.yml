@@ -72,7 +72,7 @@ jobs:
 
       - name: Install System Tools
         run: |
-          sudo apt install tree -y
+          sudo apt install -y git curl wget tree subversion
 
       - name: git clone geoip
         run: |
@@ -125,7 +125,7 @@ jobs:
 
       - name: Install System Tools
         run: |
-          sudo apt install tree -y
+          sudo apt install -y git curl wget tree subversion
 
       - name: Download apks archives
         uses: actions/download-artifact@v8
